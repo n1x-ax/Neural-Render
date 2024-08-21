@@ -9,7 +9,7 @@ type = "add-on"
 
 website = "https://github.com/n1x-ax/Neural-Render"
 
-tags = ["Render", "AI", "Image Processing"]
+tags = ["Render", "Development"]
 
 blender_version_min = "4.2.0"
 
