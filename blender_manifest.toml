@@ -1,17 +1,21 @@
-[package]
-name = "Neural Render"
-author = "Alex Nix"
+schema_version = "1.0.0"
+
+id = "neural_render"
 version = "1.0.0"
-blender = "4.2.0"
+name = "Neural Render"
+tagline = "Process rendered images with AI"
+maintainer = "Alex Nix <hi@alexnix.com>"
+type = "add-on"
 
-[package.links]
-repository = "https://github.com/n1x-ax/Neural-Render"
+website = "https://github.com/n1x-ax/Neural-Render"
 
-[package.tags]
-topics = ["Render", "AI", "Image Processing"]
+tags = ["Render", "AI", "Image Processing"]
 
-[package.requirements]
-blender = ">=4.2.0"
+blender_version_min = "4.2.0"
+
+license = [
+  "SPDX:MIT",
+]
 
 [package.description]
 long = """
@@ -26,8 +30,14 @@ Features:
 
 CAUTION: Using this plugin with Replicate API may incur costs. Users are responsible for their usage and any associated charges. Carefully manage your settings to avoid high usage and costs. Refer to the documentation for optimization tips.
 """
-short = "Process rendered images with AI"
 
-[package.license]
-identifier = "MIT"
-text = "LICENSE"
+[permissions]
+network = "API calls to Replicate for AI image processing"
+files = "Read and write image files for processing"
+
+[build]
+paths_exclude_pattern = [
+  "__pycache__/",
+  "/.git/",
+  "/*.zip",
+]
