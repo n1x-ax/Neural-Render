@@ -6,7 +6,7 @@ bl_info = {
     "location": "Properties > Render > Neural Render",
     "description": "Process rendered images with AI",
     "warning": "CAUTION: Using this plugin with Replicate API may incur costs. Users are responsible for their usage and any associated charges. Carefully manage your settings to avoid high usage and costs. Refer to the documentation for optimization tips.",
-    "doc_url": "https://github.com/n1x-ax/neural-render-blender-addon/readme.md",
+    "doc_url": "https://github.com/n1x-ax/Neural-Render",
     "category": "Render",
 }
 
