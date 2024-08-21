@@ -1,12 +1,12 @@
 bl_info = {
     "name": "Neural Render",
-    "author": "S-AI",
+    "author": "Alex Nix",
     "version": (1, 0),
     "blender": (4, 2, 0),
     "location": "Properties > Render > Neural Render",
     "description": "Process rendered images with AI",
-    "warning": "",
-    "doc_url": "",
+    "warning": "CAUTION: Using this plugin with Replicate API may incur costs. Users are responsible for their usage and any associated charges. Carefully manage your settings to avoid high usage and costs. Refer to the documentation for optimization tips.",
+    "doc_url": "https://github.com/n1x-ax/neural-render-blender-addon/readme.md",
     "category": "Render",
 }
 
