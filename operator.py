@@ -92,7 +92,8 @@ class ReplicateImageToImageOperator(bpy.types.Operator):
                 # Use the original filename with a suffix
                 original_filename = os.path.basename(original_path)
                 name, ext = os.path.splitext(original_filename)
-                output_filename = f"{name}_ai{ext}"
+                output_format = scene.replicate_output_format
+                output_filename = f"{name}_ai.{output_format}"
                 ai_output_path = os.path.join(output_dir, output_filename)
                 
                 # Ensure the output directory exists
