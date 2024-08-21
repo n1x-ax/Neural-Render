@@ -1,0 +1,33 @@
+[package]
+name = "Neural Render"
+author = "Alex Nix"
+version = "1.0.0"
+blender = "4.2.0"
+
+[package.links]
+repository = "https://github.com/n1x-ax/Neural-Render"
+
+[package.tags]
+topics = ["Render", "AI", "Image Processing"]
+
+[package.requirements]
+blender = ">=4.2.0"
+
+[package.description]
+long = """
+Neural Render is a Blender addon that integrates the Clarity Upscaler AI model from Replicate into your Blender workflow. It allows you to process rendered images with AI, enhancing their quality and resolution directly within Blender.
+
+Features:
+- Upscale and enhance rendered images using AI
+- Customizable parameters for AI processing
+- Seamless integration with Blender's render pipeline
+- Support for various Stable Diffusion models
+- Options for tiling, downscaling, and custom LoRA models
+
+CAUTION: Using this plugin with Replicate API may incur costs. Users are responsible for their usage and any associated charges. Carefully manage your settings to avoid high usage and costs. Refer to the documentation for optimization tips.
+"""
+short = "Process rendered images with AI"
+
+[package.license]
+identifier = "MIT"
+text = "LICENSE"
