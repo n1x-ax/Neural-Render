@@ -4,6 +4,8 @@ import replicate
 import tempfile
 import requests
 
+from .models import available_models
+
 class ReplicateImageToImageOperator(bpy.types.Operator):
     bl_idname = "render.replicate_image_to_image"
     bl_label = "Render"
@@ -49,66 +51,69 @@ class ReplicateImageToImageOperator(bpy.types.Operator):
             # Create a new Replicate client with the API key
             client = replicate.Client(api_token=api_key)
 
+            # Get the selected model
+            selected_model = next((model for model in available_models if model.name == scene.replicate_model), None)
+            if not selected_model:
+                raise ValueError(f"Selected model '{scene.replicate_model}' not found")
+
+            # Prepare input parameters
+            input_params = {}
+            for param in selected_model.parameters:
+                if param.name not in ["control_image", "mask"]:  # Skip both control_image and mask parameters
+                    param_value = getattr(scene, f"replicate_{param.name}")
+                    if param.type == "enum" and param.name in ["tiling_width", "tiling_height"]:
+                        param_value = int(param_value)
+                    input_params[param.name] = param_value
+
+            # Handle the image parameter differently for each model
+            if selected_model.name == "Clarity Upscaler":
+                input_params["image"] = open(temp_path, "rb")
+            elif selected_model.name == "Control Net":
+                input_params["image"] = open(temp_path, "rb")
+                input_params["control_image"] = open(temp_path, "rb")  # Use the rendered image as control image
+
             # Run the Replicate model
-            with open(temp_path, "rb") as file:
-                output = client.run(
-                    "philz1337x/clarity-upscaler:dfad41707589d68ecdccd1dfa600d55a208f9310748e44bfe35b4a6291453d5e",
-                    input={
-                        "image": file,
-                        "seed": scene.replicate_seed,
-                        "prompt": scene.replicate_positive_prompt,
-                        "negative_prompt": scene.replicate_negative_prompt,
-                        "num_inference_steps": scene.replicate_steps,
-                        "scheduler": scene.replicate_scheduler,
-                        "scale_factor": scene.replicate_scale_factor,
-                        "dynamic": scene.replicate_dynamic,
-                        "creativity": scene.replicate_creativity,
-                        "resemblance": scene.replicate_resemblance,
-                        "tiling_width": int(scene.replicate_tiling_width),
-                        "tiling_height": int(scene.replicate_tiling_height),
-                        "sd_model": scene.replicate_sd_model,
-                        "downscaling": scene.replicate_downscaling,
-                        "downscaling_resolution": scene.replicate_downscaling_resolution,
-                        "lora_links": scene.replicate_lora_links,
-                        "custom_sd_model": scene.replicate_custom_sd_model,
-                        "sharpen": scene.replicate_sharpen,
-                        "handfix": scene.replicate_handfix,
-                        "pattern": scene.replicate_pattern,
-                        "output_format": scene.replicate_output_format
-                    }
-                )
-            
+            output = client.run(
+                selected_model.model_id,
+                input=input_params
+            )
+
             # Process the output
-            if isinstance(output, list) and len(output) > 0 and isinstance(output[0], str) and output[0].startswith('http'):
-                output_url = output[0]
-                
-                # Determine the output path
-                output_dir = os.path.dirname(bpy.path.abspath(original_path))
-                if not output_dir:
-                    output_dir = bpy.path.abspath("//")  # Get the directory of the current .blend file
-                if not output_dir:
-                    output_dir = tempfile.gettempdir()  # Fall back to system temp directory if no .blend file is saved
-                
-                # Use the original filename with a suffix
-                original_filename = os.path.basename(original_path)
-                name, ext = os.path.splitext(original_filename)
-                output_format = scene.replicate_output_format
-                output_filename = f"{name}_ai.{output_format}"
-                ai_output_path = os.path.join(output_dir, output_filename)
-                
-                # Ensure the output directory exists
-                os.makedirs(output_dir, exist_ok=True)
-                
-                # Download the image from the URL and save it
-                response = requests.get(output_url)
-                if response.status_code == 200:
-                    with open(ai_output_path, 'wb') as f:
-                        f.write(response.content)
-                    self.report({'INFO'}, f"Processed image saved: {ai_output_path}")
+            if isinstance(output, list):
+                if selected_model.name == "Control Net":
+                    # For Control Net, always use the second image (index 1)
+                    image_url = output[1] if len(output) > 1 else None
                 else:
-                    raise RuntimeError(f"Failed to download the processed image. Status code: {response.status_code}")
+                    # For other models, use the first image
+                    image_url = output[0] if output else None
             else:
-                raise ValueError(f"Unexpected output from Replicate: {output}")
+                image_url = output
+            
+            # Determine the output path
+            output_dir = os.path.dirname(bpy.path.abspath(original_path))
+            if not output_dir:
+                output_dir = bpy.path.abspath("//")  # Get the directory of the current .blend file
+            if not output_dir:
+                output_dir = tempfile.gettempdir()  # Fall back to system temp directory if no .blend file is saved
+            
+            # Use the original filename with a suffix
+            original_filename = os.path.basename(original_path)
+            name, ext = os.path.splitext(original_filename)
+            output_format = scene.replicate_output_format
+            output_filename = f"{name}_ai.{output_format}"
+            ai_output_path = os.path.join(output_dir, output_filename)
+            
+            # Ensure the output directory exists
+            os.makedirs(output_dir, exist_ok=True)
+            
+            # Download the image from the URL and save it
+            response = requests.get(image_url)
+            if response.status_code == 200:
+                with open(ai_output_path, 'wb') as f:
+                    f.write(response.content)
+                self.report({'INFO'}, f"Processed image saved: {ai_output_path}")
+            else:
+                raise RuntimeError(f"Failed to download the processed image. Status code: {response.status_code}")
 
         except Exception as e:
             self.report({'ERROR'}, f"Error processing image: {str(e)}")

@@ -1,4 +1,5 @@
 import bpy
+from .models import available_models, ModelParameter
 
 class ReplicateImageToImagePanel(bpy.types.Panel):
     bl_label = "Neural Render"
@@ -11,26 +12,17 @@ class ReplicateImageToImagePanel(bpy.types.Panel):
         layout = self.layout
         scene = context.scene
 
-        layout.prop(scene, "replicate_positive_prompt")
-        layout.prop(scene, "replicate_negative_prompt")
-        layout.prop(scene, "replicate_seed")
-        layout.prop(scene, "replicate_steps")
-        layout.prop(scene, "replicate_scheduler")
-        layout.prop(scene, "replicate_scale_factor")
-        layout.prop(scene, "replicate_dynamic")
-        layout.prop(scene, "replicate_creativity")
-        layout.prop(scene, "replicate_resemblance")
-        layout.prop(scene, "replicate_tiling_width")
-        layout.prop(scene, "replicate_tiling_height")
-        layout.prop(scene, "replicate_sd_model")
-        layout.prop(scene, "replicate_downscaling")
-        layout.prop(scene, "replicate_downscaling_resolution")
-        layout.prop(scene, "replicate_lora_links")
-        layout.prop(scene, "replicate_custom_sd_model")
-        layout.prop(scene, "replicate_sharpen")
-        layout.prop(scene, "replicate_mask")
-        layout.prop(scene, "replicate_handfix")
-        layout.prop(scene, "replicate_pattern")
-        layout.prop(scene, "replicate_output_format")
+        layout.prop(scene, "replicate_model")
+
+        selected_model = next((model for model in available_models if model.name == scene.replicate_model), None)
+        if selected_model:
+            for param in selected_model.parameters:
+                if param.name not in ["control_image", "mask"]:  # Skip both control_image and mask parameters
+                    if param.type == "enum":
+                        layout.prop(scene, f"replicate_{param.name}")
+                    elif param.type == "bool":
+                        layout.prop(scene, f"replicate_{param.name}")
+                    else:
+                        layout.prop(scene, f"replicate_{param.name}")
 
         layout.operator("render.replicate_image_to_image")
