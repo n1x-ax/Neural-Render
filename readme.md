@@ -20,7 +20,8 @@ Neural Render is a Blender addon that integrates the Clarity Upscaler AI model f
 1. Set up your Replicate API key in the addon preferences
 2. Go to the Properties panel > Render tab > Neural Render section
 3. Adjust the AI processing parameters as needed
-4. Click the "Neural Render" button to render image with AI
+4. Render your image
+5. Click the "Neural Render" button to process the rendered image with AI
 
 ## Requirements
 - Blender 4.2.0 or higher
