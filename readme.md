@@ -1,13 +1,14 @@
 # Neural Render - Blender Addon
 
 ## Description
-Neural Render is a Blender addon that integrates the Clarity Upscaler AI model from Replicate into your Blender workflow. It allows you to process rendered images with AI, enhancing their quality and resolution directly within Blender.
+Neural Render is a Blender addon that integrates AI models from Replicate into your Blender workflow. It allows you to process rendered images with AI, enhancing their quality and resolution or generating new images based on your renders directly within Blender.
 
 ## Features
-- Upscale and enhance rendered images using AI
+- Upscale and enhance rendered images using AI (Clarity Upscaler)
+- Generate new images based on your renders using Control Net
 - Customizable parameters for AI processing
 - Seamless integration with Blender's render pipeline
-- Support for various Stable Diffusion models
+- Support for various Stable Diffusion models and control types
 - Options for tiling, downscaling, and custom LoRA models
 
 ## Installation
@@ -19,8 +20,9 @@ Neural Render is a Blender addon that integrates the Clarity Upscaler AI model f
 ## Usage
 1. Set up your Replicate API key in the addon preferences
 2. Go to the Properties panel > Render tab > Neural Render section
-3. Adjust the AI processing parameters as needed
-4. Click the "Neural Render" button to render image with AI
+3. Choose the AI model you want to use (Clarity Upscaler or Control Net)
+4. Adjust the AI processing parameters as needed
+5. Click the "Neural Render" button to process your render with AI
 
 ## Requirements
 - Blender 4.2.0 or higher
@@ -29,7 +31,6 @@ Neural Render is a Blender addon that integrates the Clarity Upscaler AI model f
 - Replicate API key
 
 ## Getting Started with Replicate
-
 1. Visit the Replicate website: https://replicate.com
 2. Sign up for an account if you don't have one
 3. Once logged in, go to your account settings
@@ -40,6 +41,10 @@ Remember to never share your API token publicly. You can always generate a new t
 
 ## Configuration
 - API Key: Enter your Replicate API key in the addon preferences
+- AI Model: Choose between Clarity Upscaler and Control Net
+- Model-specific parameters: Adjust based on the selected model
+
+### Clarity Upscaler Parameters
 - Positive Prompt: Describe what you want to enhance in the image
 - Negative Prompt: Describe what you want to avoid in the image
 - Seed: Set a seed for reproducible results
@@ -47,6 +52,15 @@ Remember to never share your API token publicly. You can always generate a new t
 - Scheduler: Choose the AI scheduler algorithm
 - Scale Factor: Set the upscaling factor
 - Other parameters: Adjust creativity, resemblance, tiling, etc.
+
+### Control Net Parameters
+- Prompt: Describe the image you want to generate
+- Negative Prompt: Describe what you want to avoid in the image
+- Seed: Set a seed for reproducible results
+- Steps: Number of inference steps
+- Control Type: Choose between canny, soft edge, or depth
+- Guidance Scale: Adjust the influence of the prompt
+- Control Strength: Set the strength of the control
 
 ## Support
 For issues, feature requests, or contributions, please visit the GitHub repository.
@@ -69,6 +83,8 @@ Using this plugin with Replicate API may incur costs. Users are responsible for 
 ### Installation Tip
 If you encounter issues with missing dependencies when installing the addon, you can manually install the required packages. Here's how:
 
+#### Method 1 (Works for Mac, may work for some Windows setups):
+
 1. Open Blender's Script Editor
 2. Create a new text file
 3. Paste and run the following Python code:
@@ -82,7 +98,29 @@ subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'replicate'])
 4. Restart Blender
 5. Try enabling the Neural Render addon again
 
-This should install the necessary 'replicate' package in Blender's Python environment.
+#### Method 2 (Alternative for Windows users):
+
+If Method 1 doesn't work on your Windows system, follow these steps:
+
+1. Locate your Blender installation folder. It's typically in:
+   `C:\Program Files\Blender Foundation\Blender 4.2`
+
+2. Open Windows File Explorer and navigate to this folder
+
+3. In the address bar at the top, type `cmd` and press Enter. This will open a Command Prompt window in the Blender folder
+
+4. In the Command Prompt, type the following command and press Enter:
+   ```
+   4.2\python\bin\python.exe -m pip install replicate
+   ```
+
+5. Wait for the installation to complete. You should see a success message
+
+6. Close the Command Prompt and restart Blender
+
+7. Try enabling the Neural Render addon again
+
+These methods should install the necessary 'replicate' package in Blender's Python environment. If you're still experiencing issues, please check our GitHub repository for the most up-to-date troubleshooting tips.
 
 ## Parameter Descriptions
 
