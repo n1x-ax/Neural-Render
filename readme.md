@@ -66,6 +66,24 @@ Using this plugin with Replicate API may incur costs. Users are responsible for 
 - Change the seed to diversify your generation.
 - Lower creativity and resemblance values will only upscale/enhance your render. For creative outputs, try increasing these numbers and don't hesitate to experiment.
 
+### Installation Tip
+If you encounter issues with missing dependencies when installing the addon, you can manually install the required packages. Here's how:
+
+1. Open Blender's Script Editor
+2. Create a new text file
+3. Paste and run the following Python code:
+
+```python
+import sys
+import subprocess
+subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'replicate'])
+```
+
+4. Restart Blender
+5. Try enabling the Neural Render addon again
+
+This should install the necessary 'replicate' package in Blender's Python environment.
+
 ## Parameter Descriptions
 
 - Positive Prompt: Describe what you want to enhance or add to the image.
