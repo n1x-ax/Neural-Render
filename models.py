@@ -77,8 +77,7 @@ control_net = AIModel(
         ModelParameter("control_strength", "float", 0.5, "Strength of control net", 0, 3),
         ModelParameter("depth_preprocessor", "enum", "DepthAnything", "Preprocessor to use with depth control net", options=["Midas", "Zoe", "DepthAnything", "Zoe-DepthAnything"]),
         ModelParameter("soft_edge_preprocessor", "enum", "HED", "Preprocessor to use with soft edge control net", options=["HED", "TEED", "PiDiNet"]),
-        ModelParameter("image_to_image_strength", "float", 0, "Strength of image to image control", 0, 1),
-        ModelParameter("return_preprocessed_image", "bool", False, "Return the preprocessed image used to control the generation process")
+        ModelParameter("image_to_image_strength", "float", 0, "Strength of image to image control", 0, 1)
     ]
 )
 

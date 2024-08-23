@@ -12,6 +12,7 @@ bl_info = {
     "warning": "Requires internet; may incur API costs; manage settings carefully and refer to docs for optimization.",
     "doc_url": "https://github.com/n1x-ax/Neural-Render",
     "category": "Render",
+    "license": "GPL-3.0-or-later",
 }
 
 import bpy
