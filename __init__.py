@@ -5,7 +5,7 @@ import os
 bl_info = {
     "name": "Neural Render",
     "author": "Alex Nix",
-    "version": (1, 0, 1),
+    "version": (1, 1),
     "blender": (4, 2, 0),
     "location": "Properties > Render > Neural Render",
     "description": "Process rendered images with AI",
