@@ -81,5 +81,26 @@ control_net = AIModel(
     ]
 )
 
+flux_control_net = AIModel(
+    name="Flux Control Net",
+    provider="Replicate",
+    model_id="xlabs-ai/flux-dev-controlnet:f2c31c31d81278a91b2447a304dae654c64a5d5a70340fba811bb1cbd41019a2",
+    description="Generate images using Flux Control Net with various control types",
+    parameters=[
+        ModelParameter("seed", "int", 0, "Set a seed for reproducibility. Random by default."),
+        ModelParameter("steps", "int", 28, "Number of steps", 1, 50),
+        ModelParameter("prompt", "string", "", "Prompt for image generation"),
+        ModelParameter("control_type", "enum", "depth", "Type of control net", options=["canny", "soft_edge", "depth"]),
+        ModelParameter("output_format", "enum", "webp", "Format of the output images", options=["webp", "jpg", "png"]),
+        ModelParameter("guidance_scale", "float", 3.5, "Guidance scale", 0, 5),
+        ModelParameter("output_quality", "int", 80, "Quality of the output images, from 0 to 100", 0, 100),
+        ModelParameter("negative_prompt", "string", "", "Things you do not want to see in your image"),
+        ModelParameter("control_strength", "float", 0.5, "Strength of control net", 0, 3),
+        ModelParameter("depth_preprocessor", "enum", "DepthAnything", "Preprocessor to use with depth control net", options=["Midas", "Zoe", "DepthAnything", "Zoe-DepthAnything"]),
+        ModelParameter("soft_edge_preprocessor", "enum", "HED", "Preprocessor to use with soft edge control net", options=["HED", "TEED", "PiDiNet"]),
+        ModelParameter("image_to_image_strength", "float", 0, "Strength of image to image control", 0, 1)
+    ]
+)
+
 # Update the available_models list
-available_models = [clarity_upscaler, control_net]
+available_models = [clarity_upscaler, control_net, flux_control_net]

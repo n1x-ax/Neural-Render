@@ -17,7 +17,7 @@ bl_info = {
 
 import bpy
 from .operator import ReplicateImageToImageOperator
-from .panel import ReplicateImageToImagePanel
+from .panel import ReplicateImageToImagePanel, UpscaleImagePanel, UpscaleRenderResultPanel, OpenLastRenderOperator
 from .preferences import ReplicateAddonPreferences
 from .models import available_models
 
@@ -25,6 +25,9 @@ classes = (
     ReplicateAddonPreferences,
     ReplicateImageToImageOperator,
     ReplicateImageToImagePanel,
+    UpscaleImagePanel,
+    UpscaleRenderResultPanel,
+    OpenLastRenderOperator,
 )
 
 def check_and_install_dependencies():
@@ -51,7 +54,16 @@ def register():
         raise ImportError("Required dependencies are not installed. Please install them manually.")
 
     for cls in classes:
-        bpy.utils.register_class(cls)
+        try:
+            bpy.utils.register_class(cls)
+        except ValueError as e:
+            # Class is already registered, so we'll unregister and re-register
+            if "already registered" in str(e):
+                bpy.utils.unregister_class(cls)
+                bpy.utils.register_class(cls)
+            else:
+                raise e
+
     bpy.types.Scene.replicate_model = bpy.props.EnumProperty(
         name="AI Model",
         items=[(model.name, model.name, model.description) for model in available_models],
@@ -104,15 +116,91 @@ def register():
         default=False
     )
 
+    bpy.types.Scene.replicate_seed = bpy.props.IntProperty(
+        name="Seed",
+        default=0,
+        description="Seed for random number generator, 0 means random"
+    )
+    bpy.types.Scene.upscale_scale_factor = bpy.props.FloatProperty(
+        name="Scale Factor",
+        default=2.0,
+        min=1.0,
+        max=4.0,
+        description="Scale factor for upscaling"
+    )
+    bpy.types.Scene.upscale_prompt = bpy.props.StringProperty(
+        name="Prompt",
+        default="anime style",
+        description="Prompt for the image generation"
+    )
+    bpy.types.Scene.upscale_negative_prompt = bpy.props.StringProperty(
+        name="Negative Prompt",
+        default="(worst quality, low quality, normal quality:2) JuggernautNegative-neg",
+        description="Negative prompt for the image generation"
+    )
+    bpy.types.Scene.upscale_num_inference_steps = bpy.props.IntProperty(
+        name="Steps",
+        default=20,
+        min=1,
+        max=100,
+        description="Number of inference steps"
+    )
+    bpy.types.Scene.upscale_scheduler = bpy.props.EnumProperty(
+        name="Scheduler",
+        items=[("DPM++ 3M SDE Karras", "DPM++ 3M SDE Karras", "")],
+        default="DPM++ 3M SDE Karras",
+        description="Scheduler for the diffusion process"
+    )
+    bpy.types.Scene.upscale_dynamic = bpy.props.FloatProperty(
+        name="Dynamic",
+        default=6.0,
+        min=1.0,
+        max=50.0,
+        description="HDR, try from 3 - 9"
+    )
+    bpy.types.Scene.upscale_creativity = bpy.props.FloatProperty(
+        name="Creativity",
+        default=0.35,
+        min=0.0,
+        max=1.0,
+        description="Creativity, try from 0.3 - 0.9"
+    )
+    bpy.types.Scene.upscale_resemblance = bpy.props.FloatProperty(
+        name="Resemblance",
+        default=0.6,
+        min=0.0,
+        max=3.0,
+        description="Resemblance, try from 0.3 - 1.6"
+    )
+    bpy.types.Scene.upscale_seed = bpy.props.IntProperty(
+        name="Seed",
+        default=0,
+        description="Seed for random number generator, 0 means random"
+    )
+
 def unregister():
     for cls in reversed(classes):
-        bpy.utils.unregister_class(cls)
+        try:
+            bpy.utils.unregister_class(cls)
+        except RuntimeError:
+            pass  # Class is already unregistered, so we can ignore this error
+
     del bpy.types.Scene.replicate_model
     for model in available_models:
         for param in model.parameters:
             if param.name not in ["control_image", "mask"]:  # Skip both control_image and mask parameters
                 delattr(bpy.types.Scene, f"replicate_{param.name}")
     del bpy.types.Scene.replicate_return_preprocessed_image
+    del bpy.types.Scene.replicate_seed
+    del bpy.types.Scene.upscale_scale_factor
+    del bpy.types.Scene.upscale_prompt
+    del bpy.types.Scene.upscale_negative_prompt
+    del bpy.types.Scene.upscale_num_inference_steps
+    del bpy.types.Scene.upscale_scheduler
+    del bpy.types.Scene.upscale_dynamic
+    del bpy.types.Scene.upscale_creativity
+    del bpy.types.Scene.upscale_resemblance
+    del bpy.types.Scene.upscale_seed
 
 if __name__ == "__main__":
     register()

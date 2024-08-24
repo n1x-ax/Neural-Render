@@ -1,5 +1,7 @@
 # Neural Render - Blender Addon
 
+Hey there, lucky user! Welcome to the cutting edge of "ship it and see what breaks" development. I push updates faster than I debug, so congrats - you're now part of our esteemed QA team! Spot a bug? Something acting funky? Well, aren't you fortunate! You've got yourself a golden ticket to contribute to this open-source masterpiece. Remember, quality is a team sport, so feel free to jump in and make this plugin less shitty. As for the license - use your brain, don't be a jerk, and we'll all have a grand old time. Now, let's dive into what this thing actually does, shall we?
+
 ## Description
 Neural Render is a Blender addon that integrates AI models from Replicate into your Blender workflow. It allows you to process rendered images with AI, enhancing their quality and resolution or generating new images based on your renders directly within Blender.
 
@@ -153,6 +155,9 @@ This project is licensed under the GNU General Public License v3.0 or later (GPL
 - Developed by Alex Nix
 - Powered by Replicate and the Clarity Upscaler model
 - Built for Blender, the free and open source 3D creation suite
+- Flux Control Net model by xlabs-ai
+- Control Net model by jagilley
+- Cursor AI for everything else
 
 ## Disclaimer
 This addon requires an active Replicate account and API usage may incur costs. Please refer to Replicate's pricing for more information.
